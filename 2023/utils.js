@@ -18,7 +18,7 @@ module.exports.readData = function(path, filterEmptyRows) {
             }
         });
     });
-}
+};
 
 module.exports.writeData = function(path, data) {
     return new Promise((resolve, reject) => {
@@ -27,4 +27,14 @@ module.exports.writeData = function(path, data) {
             else resolve();
         });
     });
-}
+};
+
+module.exports.trampoline = function(fn, ...args) {
+    let x = fn(...args);
+
+    while (typeof x === 'function') {
+        x = x();
+    }
+
+    return x;
+};

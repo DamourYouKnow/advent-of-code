@@ -1,4 +1,3 @@
-const { match } = require('assert');
 const utils = require('../utils');
 
 utils.readData('./04/input').then((data) => {
