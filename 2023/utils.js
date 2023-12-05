@@ -38,3 +38,20 @@ module.exports.trampoline = function(fn, ...args) {
 
     return x;
 };
+
+module.exports.arraySplit = function(arr, predicate) {
+    const chunks = [];
+    let currentChunk = [];
+
+    for (const item of arr) {
+        if (predicate(item)) {
+            chunks.push(currentChunk);
+            currentChunk = [];
+        } else {
+            currentChunk.push(item);
+        }
+    }
+
+    chunks.push(currentChunk);
+    return chunks;
+}
