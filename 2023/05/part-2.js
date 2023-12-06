@@ -9,7 +9,7 @@ utils.readData('./05/input', false).then((data) => {
     for (let i = 0; i < seeds.length; i+= 2) {
         seedRanges.push({
             start: seeds[i],
-            end: seeds[i] + seeds[i + 1]
+            end: seeds[i] + seeds[i + 1] - 1
         });
 
         total += seeds[i + 1];
@@ -19,8 +19,6 @@ utils.readData('./05/input', false).then((data) => {
         .arraySplit(data, (row) => row == '')
         .slice(1)
         .map((value) => createMap(value.slice(1)));
-
-    const locations = [];
 
     let min = Number.MAX_SAFE_INTEGER;
     let progress = 0;
@@ -73,8 +71,7 @@ function createMap(entries) {
 function searchMap(map, value) {
     let next = value;
     for (const entry of map) {
-        const sourceEnd = entry.sourceStart + entry.range;
-        const destinationEnd = entry.destinationStart + entry.range;
+        const sourceEnd = entry.sourceStart + entry.range - 1;
         if (value >= entry.sourceStart && value <= sourceEnd) {
             const step = value - entry.sourceStart;
             next = entry.destinationStart + step;
