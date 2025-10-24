@@ -1,6 +1,6 @@
 const utils = require('../utils');
 
-utils.readData('./16/input', false).then((data) => {
+utils.readData('./17/input', false).then((data) => {
     const readString = (row) => row.split(': ')[1];
     const readNumber = (row) => Number(readString(row));
     const readArray = (row) => readString(row).split(',').map(Number);
