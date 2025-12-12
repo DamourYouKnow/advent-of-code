@@ -135,6 +135,52 @@ class Grid {
             .map((position) => this.at(position));
     };
 
+    row(y) {
+        const startIndex = y * this.size.x;
+        return this.grid.slice(startIndex, startIndex + this.size.x);
+    }
+
+    rows() {
+        const result = [];
+
+        for (let y = 0; y < this.size.y; y++) {
+            result.push(this.row(y));
+        }
+
+        return result;
+    }
+
+    transpose() {
+        const result = this.copy();
+        result.size = { x: this.size.y, y: this.size.x };
+
+        for (let x = 0; x < this.size.x; x++) {
+            for (let y = 0; y < this.size.y; y++) {
+                const position = { x: x, y: y };
+                const transposePosition = { x: y, y: x };
+                result.set(transposePosition, this.at(position));
+            }
+        }
+
+        return result;
+    }
+
+    subgrid(position, size) {
+        if (position.x + size.x > this.size.x) {
+            size.x -= 0; // TODO
+        }
+
+        const subgrid = [];
+
+        for (let y = position.y; y < position.y + size.y; y++) {
+            for (let x = position.x; x < position.x + size.x; x++) {
+                subgrid.push(this.at({ x: x, y: y }));
+            }
+        }
+
+        return new Grid(subgrid, size);
+    }
+
     map(func) {
         const mappedGrid = this.copy();
         
