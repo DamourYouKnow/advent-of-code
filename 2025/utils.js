@@ -249,6 +249,16 @@ class Grid {
         return count;
     }
 
+    findPosition(predicate) {
+        for (let index = 0; index < this.grid.length; index++) {
+            if (predicate(this.grid[index])) {
+                return this.indexToPosition(index);
+            }
+        }
+
+        return null;
+    }
+
     copy() {
         return new Grid(this.grid, this.size);
     }
