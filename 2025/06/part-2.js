@@ -11,33 +11,45 @@ const operators = {
     }
 };
 
-utils.readData('./06/input', true).then((data) => {
-    const notEmpty = (str) => str != "";
+utils.readRawData('./06/input', true).then((data) => {
+    const grid = new utils.Grid(data);
 
-    const operandRows = data.slice(0, data.length - 1).map((row) => {
-        return row.split(' ').filter(notEmpty).map(Number);
-    });
+    const operatorRow = grid.row(grid.size.y - 1);
+    
+    const operatorIndices = operatorRow.reduce((acc, value, index) => {
+        return value != ' ' ? [...acc, index] : acc;
+    }, []);
 
-    const operandGroups = new utils.Grid(operandRows).transpose().rows();
-    const operatorList = data[data.length - 1].split(' ').filter(notEmpty);
+    const operations = operatorIndices.map((operatorIndex, i) => {
+        const endIndex = operatorIndices[i + 1] || operatorRow.length;
 
-    const operations = operandGroups.map((operands, index) => {
-        return { 
-            operands: operands , 
-            operator: operatorList[index]
+        return {
+            operator: operatorRow[operatorIndex],
+            operandGrid: grid.subgrid(
+                { x: operatorIndex, y: 0 }, 
+                { 
+                    x: endIndex - operatorIndex, 
+                    y: grid.size.y - 1
+                }
+            )
         };
     });
 
-    console.log(operations);
-
-    const results = operations.map((operation) => {
+    const totals = operations.map(operation => {
+        const operands = operation.operandGrid.columns().map((column) => {
+            return column.filter((value) => value != ' ');
+        }).map((digits) => digits.join(''))
+            .filter((digits) => digits.length > 0)
+            .map(Number);
+            
         const operator = operators[operation.operator];
 
-        return operation.operands.reduce((acc, operand) => {
-            return operator.func(acc, operand);
-        }, operator.identity);
+        return operands.reduce(
+            (a, c) => operator.func(a, c), 
+            operator.identity
+        );
     });
 
-    const total = results.reduce((acc, value) => acc + value, 0);
-    console.log(total);
+    const result = totals.reduce((acc, value) => acc + value, 0);
+    console.log(result);
 }).catch(console.error);

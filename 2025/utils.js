@@ -20,6 +20,20 @@ module.exports.readData = function(path, filterEmptyRows) {
     });
 };
 
+module.exports.readRawData = function(path, filterEmptyRows) {
+    return new Promise((resolve, reject) => {
+        fs.readFile(path, (err, data) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                data = data.toString().split('\n');
+                resolve(data);
+            }
+        });
+    });
+}
+
 module.exports.writeData = function(path, data) {
     return new Promise((resolve, reject) => {
         fs.writeFile(path, data.join('\n'), (err) => {
@@ -66,7 +80,7 @@ const vector2 = {
 };
 
 module.exports.vector2 = vector2;
- 
+
 class Grid {
     constructor(data, size) {
         if (size === undefined) {
@@ -150,6 +164,26 @@ class Grid {
         return result;
     }
 
+    column(x) {
+        const result = [];
+        
+        for (let y = 0; y < this.size.y; y++) {
+            result.push(this.at({x: x, y: y}));
+        }
+
+        return result;
+    }
+
+    columns() {
+        const result = [];
+
+        for (let x = 0; x < this.size.x; x++) {
+            result.push(this.column(x));
+        }
+
+        return result;
+    }
+
     transpose() {
         const result = this.copy();
         result.size = { x: this.size.y, y: this.size.x };
@@ -167,7 +201,10 @@ class Grid {
 
     subgrid(position, size) {
         if (position.x + size.x > this.size.x) {
-            size.x -= 0; // TODO
+            size.x -= (position.x + size.x) - this.size.x;
+        }
+        if (position.y + size.y > this.size.y) {
+            size.y -= (position.y + size.y) - this.size.y;
         }
 
         const subgrid = [];
