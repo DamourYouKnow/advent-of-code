@@ -44,6 +44,5 @@ utils.readData('./07/input', true).then((data) => {
     const totalTimelines = timelines.row(timelines.size.y - 1)
         .reduce((acc, value) => acc + value, 0);
 
-    console.log(timelines.output());
     console.log(totalTimelines);
 }).catch(console.error);
