@@ -277,3 +277,63 @@ class Grid {
 };
 
 module.exports.Grid = Grid;
+
+
+class Graph {
+    constructor(adjacencyList) {
+        this.adjacencyList = new Map();
+
+        if (adjacencyList !== undefined) {
+            for (vertex in adjacencyList) {
+                for (const neighbor in adjacencyList[vertex]) {
+                    this.connect(vertex, neighbor);
+                }
+            }
+        }
+    }
+
+    connect(vertexA, vertexB) {
+        if (!this.adjacencyList.has(vertexA)) {
+            this.adjacencyList.set(vertexA, []);
+        }
+        if (!this.adjacencyList.has(vertexB)) {
+            this.adjacencyList.set(vertexB, []);
+        }
+        
+        const adjacentA = this.adjacencyList.get(vertexA);
+        const adjacentB = this.adjacencyList.get(vertexB);
+
+        if (!adjacentA.includes(vertexB)) {
+            adjacentB.push(vertexB);
+        }
+        if (!adjacentB.includes(vertexA)) {
+            adjacentA.push(vertexB);
+        }
+    }
+
+    neighbors(vertex) {
+        return this.adjacencyList.get(vertex).slice();
+    }
+
+    vertices() {
+        return Array.from(this.adjacencyList.values());
+    }
+
+    contains(vertex) {
+        return this.adjacencyList.has(vertex);
+    }
+
+    merge(other) {
+        for (const vertex of other.adjacencyList.keys()) {
+            for (const neighbor of other.adjacencyList.get(vertex)) {
+                this.connect(vertex, neighbor);
+            }
+        }
+    }
+
+    size() {
+        return this.adjacencyList.size;
+    }
+}
+
+module.exports.Graph = Graph;

@@ -1,4 +1,3 @@
-const { time } = require('console');
 const utils = require('../utils');
 
 utils.readData('./07/input', true).then((data) => {
