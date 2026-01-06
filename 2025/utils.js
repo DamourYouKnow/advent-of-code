@@ -280,6 +280,7 @@ module.exports.Grid = Grid;
 
 
 class Graph {
+    // TODO: Handle providing an adjacency list
     constructor(adjacencyList) {
         this.adjacencyList = new Map();
 
@@ -304,10 +305,16 @@ class Graph {
         const adjacentB = this.adjacencyList.get(vertexB);
 
         if (!adjacentA.includes(vertexB)) {
-            adjacentB.push(vertexB);
+            adjacentA.push(vertexB);
         }
         if (!adjacentB.includes(vertexA)) {
-            adjacentA.push(vertexB);
+            adjacentB.push(vertexA);
+        }
+    }
+
+    insert(vertex) {
+        if (!this.adjacencyList.has(vertex)) {
+            this.adjacencyList.set(vertex, []);
         }
     }
 
@@ -316,7 +323,7 @@ class Graph {
     }
 
     vertices() {
-        return Array.from(this.adjacencyList.values());
+        return Array.from(this.adjacencyList.keys());
     }
 
     contains(vertex) {
@@ -324,9 +331,11 @@ class Graph {
     }
 
     merge(other) {
-        for (const vertex of other.adjacencyList.keys()) {
-            for (const neighbor of other.adjacencyList.get(vertex)) {
-                this.connect(vertex, neighbor);
+        for (const otherVertex of other.adjacencyList.keys()) {
+            this.insert(otherVertex);
+
+            for (const neighbor of other.adjacencyList.get(otherVertex)) {
+                this.connect(otherVertex, neighbor);
             }
         }
     }

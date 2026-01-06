@@ -11,8 +11,6 @@ utils.readData('./08/input', true).then((data) => {
         };
     });
 
-    const connectedPairs = positions.length == 1000 ? 1000 : 10;
-
     const graphAssignments = new Map();
     const graphSet = new Set();
 
@@ -23,9 +21,12 @@ utils.readData('./08/input', true).then((data) => {
         graphSet.add(graph);
     };
 
-    const pairs = sortedPairs(positions).slice(0, connectedPairs);
+    const pairs = sortedPairs(positions);
+    let pairIndex = 0;
+    let pair = null;
 
-    for (const pair of pairs) {
+    while (graphSet.size > 1) {
+        pair = pairs[pairIndex++];
         const graphA = graphAssignments.get(pair.a) 
         const graphB = graphAssignments.get(pair.b);
 
@@ -42,18 +43,8 @@ utils.readData('./08/input', true).then((data) => {
         graphA.connect(pair.a, pair.b);
     }
 
-    const graphs = Array.from(graphSet);
-    graphs.sort((a, b) => b.size() - a.size());
-
-    const largestCircuits = graphs.slice(0, 3);
-
-    //console.log(graphs.map(graphString));
-
-    const result = largestCircuits.reduce((acc, graph) => {
-        return acc * graph.size();
-    }, 1);
-
-    console.log(result);
+    const result = pair.a.x * pair.b.x;
+    console.log(result);  
 }).catch(console.error);
 
 
