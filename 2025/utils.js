@@ -70,6 +70,66 @@ module.exports.arraySplit = function(arr, predicate) {
     return chunks;
 }
 
+function collect(array, startIndex, predicate, step=1) {
+    const result = [];
+    let currentIndex = startIndex;
+
+    while (currentIndex >= 0 && currentIndex < array.length) {
+        const currentValue = array[currentIndex];
+
+        if (!predicate(currentValue)) {
+            break;
+        }
+
+        result.push(currentValue);
+        currentIndex += step
+    }
+
+    return result;
+}
+module.exports.collect = collect;
+
+module.exports.binarySearch = function(
+    array, 
+    target, 
+    evaluator, 
+    comparator,
+    arraySearch = false
+) {
+    const mid = (min, max) => min + (Math.floor((max - min) / 2));
+    
+    let minIndex = 0;
+    let maxIndex = array.length - 1;
+    
+    while (minIndex <= maxIndex) {
+        const midIndex = mid(maxIndex, minIndex);
+        const midValue = evaluator(array[midIndex]);
+        const compareResult = comparator(midValue, target);
+
+        if (compareResult < 0) {
+            minIndex = midIndex + 1;
+        }
+        else if (compareResult > 0) {
+            maxIndex = midIndex - 1;
+        }
+        else {
+            if (arraySearch) {
+                const collectable = (value) => evaluator(value) == midValue;
+
+                return [
+                    ...collect(array, midIndex, collectable, -1),
+                    ...collect(array, midIndex + 1, collectable, 1)
+                ];
+            }
+            else {
+                return array[midIndex];
+            }
+        }
+    }
+
+    return arraySearch ? [] : null;
+}
+
 const vector2 = {
     add: (a, b) => { 
         return  { x: a.x + b.x, y: a.y + b.y }
