@@ -12,10 +12,11 @@ utils.readData('./09/input', true).then((data) => {
     });
 
     const sortedVertices = sortVertices(vertices);
-
     const polygon = linkVertices(vertices, sortedVertices);
 
-    console.log(polygon);
+    const pairs = cornerPairs(vertices);
+
+    console.log(candidatePairs);
 
 }).catch(console.error);
 
@@ -87,5 +88,24 @@ function sortVertices(vertices) {
         y: vertices.sort((a, b) => a.y - b.y).slice()
     };
 }
+
+
+function vertexInPair(vertex, pair) {
+    const topLeft = {
+        x: Math.min(pair.a.x, pair.b.x),
+        y: Math.min(pair.a.y, pair.b.y)
+    };
+
+    const bottomRight = {
+        x: Math.max(pair.a.x, pair.b.x),
+        y: Math.max(pair.a.y, pair.b.y)
+    };
+
+    const validX = vertex.x > topLeft.x && vertex.x < bottomRight.x;
+    const validY = vertex.y > topLeft.y && vertex.y < bottomRight.y;
+
+    return validX && validY;
+}
+
 
 
