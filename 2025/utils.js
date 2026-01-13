@@ -406,3 +406,63 @@ class Graph {
 }
 
 module.exports.Graph = Graph;
+
+
+class Queue {
+    constructor(values) {
+        this.head = null;
+        this.tail = null;
+        this._size = 0;
+
+        if (values !== undefined) {
+            for (let i = 0; i < values.length; i++) {
+                this.enqueue(values[i]);
+            }
+        }
+    }
+
+    enqueue(value) {
+        const node = {
+            value: value,
+            next: null
+        };
+
+        if (this.tail) {
+            this.tail.next = node;
+        }
+
+        this.tail = node;
+        if (!this.head) this.head = node;
+
+        this._size += 1;
+    }
+
+    dequeue() {
+        const removed = this.first();
+
+        if (this.head) {
+            this.head = this.head.next;
+            this._size -= 1;
+        }
+
+        if (!this.head) {
+            this.tail = null;
+        }
+
+        return removed;
+    }
+
+    first() {
+        return this.head ? this.head.value : null;
+    }
+
+    last() {
+        return this.tail ? this.tail.value : null;
+    }
+
+    size() {
+        return this._size;
+    }
+}
+
+module.exports.Queue = Queue;

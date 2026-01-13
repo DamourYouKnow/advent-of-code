@@ -19,12 +19,17 @@ utils.readData('./10/input', true).then((data) => {
     machines.forEach(logMachine);
 }).catch(console.error);
 
+function hammingDistance(a, b) {
+    let xorResult = a ^ b;
+    let distance = 0;
 
+    while (xorResult != 0) {
+        xorResult &= (xorResult - 1);
+        distance += 1;
+    }
 
-
-
-
-
+    return distance;
+}
 
 function binaryToByte(binary) {
     return parseInt(binary, 2);
