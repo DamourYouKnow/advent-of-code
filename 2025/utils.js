@@ -463,6 +463,23 @@ class Queue {
     size() {
         return this._size;
     }
+
+    empty() {
+        return this.head == null;
+    }
+
+    toArray() {
+        const values = [];
+
+        let current = this.head;
+
+        while (current != null) {
+            values.push(current.value);
+            current = current.next;
+        }
+
+        return values;
+    }
 }
 
 module.exports.Queue = Queue;

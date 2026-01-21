@@ -1,6 +1,5 @@
 const utils = require('../utils');
 
-
 utils.readData('./10/input', true).then((data) => {
     const machines = data.map((row) => {
         const split = row.split(' ');
@@ -15,9 +14,52 @@ utils.readData('./10/input', true).then((data) => {
         };
     });
 
-    console.log(machines);
-    machines.forEach(logMachine);
+    let result = 0;
+    for (const machine of machines) {
+        result += search(0, machine.desiredState, machine.buttons);
+    }
+    console.log(result);
 }).catch(console.error);
+
+
+function search(startState, targetState, expansions) {
+    // Breadth-first
+    // Can be modified to A* search using hamming distance heuristic.
+    const queue = new utils.Queue([startState]);
+    const visited = new Set([startState]); 
+    const parents = new Map();
+
+    while (!queue.empty()) {
+        const currentState = queue.dequeue();
+        
+        if (currentState == targetState) {
+            // Found path, backtrack to calculate distance.
+            let distance = 0;
+            let backtrack = currentState;
+            
+            while (backtrack != null) {
+                backtrack = parents.get(backtrack);
+                distance += 1;
+            }
+
+            return distance - 1;
+        }
+
+        // Traverse neighboring states using XOR on expansion list.
+        for (const expansion of expansions) {
+            const neighborState = currentState ^ expansion;
+            
+            if (!visited.has(neighborState)) {
+                visited.add(neighborState);
+                parents.set(neighborState, currentState);
+                queue.enqueue(neighborState);
+            }
+        }
+    }
+
+    return null;
+}
+
 
 function hammingDistance(a, b) {
     let xorResult = a ^ b;
@@ -70,5 +112,5 @@ function parseButton(string, size) {
         byte ^= (1 << index);
     }
 
-    return binaryReverse(byte, size);
+    return binaryToByte(binaryReverse(byte, size));
 }
